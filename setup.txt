@@ -1,1 +1,18 @@
-1 2 3 4
+[
+  {
+    "power": 1,
+    "type": "honest"
+  },
+  {
+    "power": 1,
+    "type": "honest"
+  },
+  {
+    "power": 4,
+    "type": "selfish"
+  },
+  {
+    "power": 4,
+    "type": "honest"
+  }
+]
