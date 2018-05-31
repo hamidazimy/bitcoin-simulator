@@ -116,4 +116,4 @@ class Selfish(Miner):
 
     @classmethod
     def propagation_delay(cls):
-        return 0.1 #numpy.random.gamma(1.26, 10)
+        return numpy.random.gamma(1.26, 10)

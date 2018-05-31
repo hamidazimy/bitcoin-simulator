@@ -23,14 +23,14 @@ class Simulator:
         self.miners = []
 
 
-    def run(self):
+    def run(self, setup):
 
         self.time = 0
         self.q = PriorityQueue()
         self.miners = []
 
         genesis = Block()
-        setup = json.loads(open("setup.txt").read())
+        # setup = json.loads(open("setup.txt").read())
         total = numpy.sum(numpy.array([float(x["power"]) for x in setup]))
         id = 0
         for i in setup:
