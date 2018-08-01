@@ -56,7 +56,7 @@ class Miner:
             return [], None
 
     def generation_time(self):
-        return numpy.random.exponential(600 / self.power)
+        return numpy.random.exponential(600 / self.power * Simulator()._difficulty_coefficient)
 
     @classmethod
     def propagation_delay(cls):
@@ -66,11 +66,18 @@ class Miner:
 class Selfish(Miner):
     """Selfish Miner!"""
 
-    def __init__(self, id_, power, head):
+    def __init__(self, id_, power, head, is_bipolar=False):
         super().__init__(id_, power, head)
         self.public = head
+        self.is_bipolar = is_bipolar
+        self.is_honest = False
+        self.period = 2016
 
     def generate(self, event):
+        if self.is_bipolar:
+            self.is_honest = bool(event.head.height // self.period % 2)
+            if self.is_honest:
+                return super().generate(event)
         delta = self.head.height - self.public.height
         Simulator().log("{}{}{:^11.2f}{}".format(CSI.BG_MG, CSI.FG_BK, event.time, CSI.RESET))
         self.head = Block(self.head.height + 1, event.time, self, self.head)
@@ -83,6 +90,10 @@ class Selfish(Miner):
         return consequences, self.head
 
     def receive(self, event):
+        if self.is_bipolar:
+            self.is_honest = bool(event.head.height // self.period % 2)
+            if self.is_honest:
+                return super().receive(event)
         delta = self.head.height - self.public.height
         Simulator().log("{}{}{:^11.2f}{}".format(CSI.BG_CY, CSI.FG_BK, event.time, CSI.RESET))
         Simulator().log("Miner {} received new block! {}".format(self.id_, event.head))
