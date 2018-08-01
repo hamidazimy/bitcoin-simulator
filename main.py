@@ -8,6 +8,7 @@ from IPython import embed
 from simulator import Simulator
 
 if __name__ == "__main__":
+
     one = """
     n = 1000
 
@@ -82,13 +83,10 @@ if __name__ == "__main__":
 
     print(setup)
 
-    si = 3
-
     stats = []
 
-    for c in range(n):
-        head = Simulator().run(setup)
-        time = head.time
+    head = Simulator().run(setup)
+    time = head.time
 
     blocks = [0] * (head.height + 1)
     temp = head
