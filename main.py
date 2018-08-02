@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     colors = "bgrcmykw"
 
-    for i in range(4):
+    for i in range(len(setup)):
         base_x = [0, time / 3600]
         # base_y = [0, time / 600 * setup[si]["power"]]
         base_y = [0, time / 600 * setup[i]["power"]]
@@ -104,7 +104,16 @@ if __name__ == "__main__":
         selfish_x = [b.time / 3600 for b in blocks[1:]]
         selfish_y = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
         # selfish_y = np.cumsum([1] * head.height)
-        plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label="[{}] {}".format(setup[i]["power"], setup[i]["type"]))
+        plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label="[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"]))
+
+    base_t_x = [0, time / 3600]
+    base_t_y = [0, time / 600]
+
+    total_x = [b.time / 3600 for b in blocks[1:]]
+    total_y = np.cumsum(np.ones(len(total_x)))
+
+    plt.plot(base_t_x, base_t_y, "k:")
+    plt.plot(total_x, total_y, "k", label="Total")
 
     plt.legend()
     plt.show()
