@@ -59,10 +59,11 @@ class Simulator:
             if new_head is not None and new_head.height > head.height:
                 head = new_head
                 if head.height % 2016 == 0:
-                    print(head)
+                    prev_diffculty = Simulator._difficulty_coefficient
                     Simulator._difficulty_coefficient *= (2016 * 600) / (head.time - Simulator._last_difficulty_update_time)
-                    print((head.time - Simulator._last_difficulty_update_time) / 2016)
-                    print(Simulator._difficulty_coefficient)
+                    print(head)
+                    print("Mean block generation time in the last period: {:6.2f}".format((head.time - Simulator._last_difficulty_update_time) / 2016))
+                    print("Difficulty adjustment: ({:.3f}) → ({:.3f})".format(prev_diffculty, Simulator._difficulty_coefficient))
                     Simulator._last_difficulty_update_time = head.time
             for c in consequences:
                 q.put(c)
