@@ -2,8 +2,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import rc
 import json
 from IPython import embed
+
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+rc('text', usetex=True)
 
 from simulator import Simulator
 
@@ -81,6 +87,8 @@ if __name__ == "__main__":
     for i in setup:
         i["power"] /= total_power
 
+    setup = sorted(setup, key=lambda x: x["type"])
+
     print(setup)
 
     stats = []
@@ -96,15 +104,20 @@ if __name__ == "__main__":
 
     colors = "bgrcmykw"
 
+
+    c = {"honest": 0, "selfish": 0}
     for i in range(len(setup)):
+        c[setup[i]["type"]] += 1
         base_x = [0, time / 3600]
         # base_y = [0, time / 600 * setup[si]["power"]]
         base_y = [0, time / 600 * setup[i]["power"]]
-        plt.plot(base_x, base_y, "{}:".format(colors[i]))
+        plt.plot(base_x, base_y, "{}:".format(colors[i % 6]))
         selfish_x = [b.time / 3600 for b in blocks[1:]]
         selfish_y = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
         # selfish_y = np.cumsum([1] * head.height)
-        plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label="[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"]))
+        label1 = "[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"])
+        label2 = r'${0}_{1}~({2}_{1} = {3:.2f})$'.format("S" if setup[i]["type"] == "selfish" else "H", c[setup[i]["type"]], "\\beta" if setup[i]["type"] == "selfish" else "\\alpha", setup[i]["power"])
+        plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label=label2)
 
     base_t_x = [0, time / 3600]
     base_t_y = [0, time / 600]
