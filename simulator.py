@@ -8,8 +8,6 @@ from queue import PriorityQueue
 class Simulator:
     """Simulator!"""
     _instance = None
-    _difficulty_coefficient = 1
-    _last_difficulty_update_time = 0
 
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
@@ -23,6 +21,8 @@ class Simulator:
         self.time = 0
         self.q = PriorityQueue()
         self.miners = []
+        Simulator._difficulty_coefficient = 1
+        Simulator._last_difficulty_update_time = 0
 
 
     def run(self, setup):
@@ -30,6 +30,8 @@ class Simulator:
         self.time = 0
         self.q = PriorityQueue()
         self.miners = []
+        Simulator._difficulty_coefficient = 1
+        Simulator._last_difficulty_update_time = 0
 
         genesis = Block()
         # setup = json.loads(open("setup.txt").read())
