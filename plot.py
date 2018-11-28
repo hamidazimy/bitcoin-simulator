@@ -3,6 +3,12 @@
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
+from matplotlib import rc
+
+rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+## for Palatino and other serif fonts use:
+#rc('font',**{'family':'serif','serif':['Palatino']})
+rc('text', usetex=True)
 
 foo = np.array([
 [   0.542,	0.491,	0.503,	0.502,	0.492,	0.51,	0.529,	0.515,	0.482,	0.474,	0.475,	0.457,	0.48,	0.48,	0.445,	0.446,	0.401,	0.408,	0.383,	0.391,	0.401,	0.454,	0.361,	0.363,	0.386,	0.396,	0.329,	0.381,	0.4,	0.32,	0.319,	0.301,	0.343,	0.258,	0.308,	0.283,	0.288,	0.274,	0.283,	0.282],
@@ -49,11 +55,13 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 
-X = np.arange(0, 4, 0.1)
-Y = np.arange(5, 95, 5)
+X = np.arange(0, .4, 0.01)
+Y = np.arange(.05, .95, .05)
 X, Y = np.meshgrid(X, Y)
 
 ax.plot_surface(X, Y, bar, rstride=1, cstride=1,
                 cmap='plasma', edgecolor='none')
+plt.xlabel(r'$\delta$')
+plt.ylabel(r'$\beta_t$')
 
 plt.show()
