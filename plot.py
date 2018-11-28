@@ -48,9 +48,12 @@ bar = np.array([
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-X, Y = np.meshgrid(range(40), range(5, 95, 5))
+
+X = np.arange(0, 4, 0.1)
+Y = np.arange(5, 95, 5)
+X, Y = np.meshgrid(X, Y)
 
 ax.plot_surface(X, Y, bar, rstride=1, cstride=1,
-                cmap='viridis', edgecolor='none')
+                cmap='plasma', edgecolor='none')
 
 plt.show()

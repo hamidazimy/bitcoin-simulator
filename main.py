@@ -98,7 +98,7 @@ if __name__ == "__main__":
     for i in setup:
         i["power"] /= total_power
 
-    setup = sorted(setup, key=lambda x: x["type"])
+    setup = sorted(setup, key=lambda x: x["type"], reverse=True)
 
     print(setup)
 
@@ -119,6 +119,55 @@ if __name__ == "__main__":
     c = {"honest": 0, "selfish": 0}
     for i in range(len(setup)):
         c[setup[i]["type"]] += 1
+        # end_time = int(time / 3600)
+        # base_x = list(range(0, end_time, end_time // 10))
+        # end_revenue = int(time / 600 * setup[i]["power"])
+        # # base_y = [0, time / 600 * setup[si]["power"]]
+        # base_y = list(range(0, end_revenue, end_revenue // 10))
+        # if len(base_y) < len(base_x):
+        #     base_y.append(base_y[1] + base_y[-1])
+        # if len(base_x) < len(base_y):
+        #     base_x.append(base_x[1] + base_x[-1])
+        # print(base_y)
+        # plt.plot(base_x, base_y, "{}:*".format(colors[i % 6]))
+        selfish_x = np.array([b.time / 3600 for b in blocks[1:]])
+        selfish_y = (np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height)) - selfish_x * 6 * setup[i]["power"]) / (selfish_x * 6) * 100
+        # selfish_y = np.cumsum([1] * head.height)
+        # plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label="[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"]))
+        label1 = "[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"])
+        label2 = r'${0}_{1}~({2}_{1} = {3:.2f})$'.format("S" if setup[i]["type"] == "selfish" else "H", c[setup[i]["type"]], "\\beta" if setup[i]["type"] == "selfish" else "\\alpha", setup[i]["power"])
+        plt.ylim((-15, +15))
+        plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label=label2)
+
+    # base_t_x = [0, time / 3600]
+    # base_t_y = [0, time / 600]
+    #
+    # total_x = [b.time / 3600 for b in blocks[1:]]
+    # total_y = np.cumsum(np.ones(len(total_x)))
+    #
+    # plt.plot(base_t_x, base_t_y, "k:")
+    # plt.plot(total_x, total_y, "k", label="Total")
+
+    plt.plot([0, max(selfish_x)], [0, 0], "k--")
+
+    # plt.xlabel("Time in hours")
+    # plt.ylabel("Number of blocks generated")
+
+    plt.xlabel(r"$t$")
+    plt.ylabel(r"$G_{P_k}(t)$")
+    plt.legend()
+    plt.show()
+    #"""
+
+    #four = """
+    import sys
+
+    sys.stdin.readline()
+    plt.close()
+
+    c = {"honest": 0, "selfish": 0}
+    for i in range(len(setup)):
+        c[setup[i]["type"]] += 1
         end_time = int(time / 3600)
         base_x = list(range(0, end_time, end_time // 10))
         end_revenue = int(time / 600 * setup[i]["power"])
@@ -128,9 +177,8 @@ if __name__ == "__main__":
             base_y.append(base_y[1] + base_y[-1])
         if len(base_x) < len(base_y):
             base_x.append(base_x[1] + base_x[-1])
-        print(base_y)
         plt.plot(base_x, base_y, "{}:*".format(colors[i % 6]))
-        selfish_x = [b.time / 3600 for b in blocks[1:]]
+        selfish_x = np.array([b.time / 3600 for b in blocks[1:]])
         selfish_y = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
         # selfish_y = np.cumsum([1] * head.height)
         # plt.plot(selfish_x, selfish_y, "{}".format(colors[i]), label="[{:.3f}] {}".format(setup[i]["power"], setup[i]["type"]))
