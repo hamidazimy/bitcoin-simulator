@@ -25,7 +25,7 @@ class Simulator:
         Simulator._last_difficulty_update_time = 0
 
 
-    def run(self, setup):
+    def run(self, setup, constant_propagation_delay=None):
 
         self.time = 0
         self.q = PriorityQueue()
@@ -52,6 +52,9 @@ class Simulator:
         found = [numpy.random.exponential(600 / m.power) for m in self.miners]
         for i in range(n):
             q.put(Event(found[i], EventType.NewBlockFound, self.miners[i], self.miners[i].head))
+
+        if constant_propagation_delay is not None:
+            Miner.constant_propagation_delay = constant_propagation_delay
 
         head = Block()
         while head.height < 40320:

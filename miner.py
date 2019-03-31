@@ -10,6 +10,8 @@ from csi import CSI
 class Miner:
     """Miner!"""
 
+    constant_propagation_delay = None
+
     def __init__(self, id_, power, head):
         self.id_ = id_
         self.power = power
@@ -60,6 +62,8 @@ class Miner:
 
     @classmethod
     def propagation_delay(cls):
+        if cls.constant_propagation_delay is not None:
+            return cls.constant_propagation_delay
         return numpy.random.gamma(1.26, 10)
 
 
