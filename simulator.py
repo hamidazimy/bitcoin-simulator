@@ -14,10 +14,11 @@ class Simulator:
             cls._instance = super(Simulator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self):
+    def __init__(self, verbose=False):
         if hasattr(Simulator._instance, 'time'):
             return
 
+        self.verbose = verbose
         self.time = 0
         self.q = PriorityQueue()
         self.miners = []
@@ -66,9 +67,9 @@ class Simulator:
                 if head.height % 2016 == 0:
                     prev_diffculty = Simulator._difficulty_coefficient
                     Simulator._difficulty_coefficient *= (2016 * 600) / (head.time - Simulator._last_difficulty_update_time)
-                    print(head)
-                    print("Mean block generation time in the last period: {:6.2f}".format((head.time - Simulator._last_difficulty_update_time) / 2016))
-                    print("Difficulty adjustment: ({:.3f}) → ({:.3f})".format(prev_diffculty, Simulator._difficulty_coefficient))
+                    Simulator().log("{}".format(head))
+                    Simulator().log("Mean block generation time in the last period: {:6.2f}".format((head.time - Simulator._last_difficulty_update_time) / 2016))
+                    Simulator().log("Difficulty adjustment: ({:.3f}) → ({:.3f})".format(prev_diffculty, Simulator._difficulty_coefficient))
                     Simulator._last_difficulty_update_time = head.time
             for c in consequences:
                 q.put(c)
@@ -77,8 +78,8 @@ class Simulator:
         return head
 
     def log(self, text):
-        # print(text)
-        pass
+        if Simulator().verbose:
+            print(text)
 
 
 from event import Event, EventType
