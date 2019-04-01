@@ -105,21 +105,12 @@ if __name__ == "__main__":
 
     sim = Simulator(setup)
     sim.run()
-    head = sim.head
-    time = head.time
-
-    blocks = [None] * (head.height + 1)
-    temp = head
-    while temp is not None:
-        blocks[temp.height] = temp
-        temp = temp.prev
+    sim.analyze()
 
     colors = "rgbymckw"
 
     for i in range(len(setup)):
-        t = np.array([b.time / 3600 for b in blocks[1:]])
-        Rpi = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
-        Gpi = (Rpi - setup[i]["power"] * (t * 6)) / (t * 6) * 100
+        t, Gpi = sim.Gpis[i]
         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
         plt.ylim((-15, +15))
         plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
