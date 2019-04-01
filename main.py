@@ -103,12 +103,12 @@ if __name__ == "__main__":
     setup = sorted(setup, key=lambda x: x["type"], reverse=True)
     print(setup)
 
-    sim = Simulator()
-    sim.run(setup)
+    sim = Simulator(setup)
+    sim.run()
     head = sim.head
     time = head.time
 
-    blocks = [0] * (head.height + 1)
+    blocks = [None] * (head.height + 1)
     temp = head
     while temp is not None:
         blocks[temp.height] = temp
@@ -117,13 +117,14 @@ if __name__ == "__main__":
     colors = "rgbymckw"
 
     for i in range(len(setup)):
-        x = np.array([b.time / 3600 for b in blocks[1:]])
-        y = (np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height)) - x * 6 * setup[i]["power"]) / (x * 6) * 100
+        t = np.array([b.time / 3600 for b in blocks[1:]])
+        Rpi = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
+        Gpi = (Rpi - setup[i]["power"] * (t * 6)) / (t * 6) * 100
         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
         plt.ylim((-15, +15))
-        plt.plot(x, y, "{}".format(colors[i]), label=label)
+        plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
 
-    plt.plot([0, max(x)], [0, 0], "k--")
+    plt.plot([0, max(t)], [0, 0], "k--")
 
     plt.xlabel(r"$t$")
     plt.ylabel(r"$G_{P_i}(t)$")

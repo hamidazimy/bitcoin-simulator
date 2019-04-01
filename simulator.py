@@ -1,4 +1,4 @@
-import numpy
+import numpy as np
 import time
 import json
 
@@ -8,8 +8,9 @@ from queue import PriorityQueue
 class Simulator:
     """Simulator!"""
 
-    def __init__(self, verbose=False):
+    def __init__(self, setup, verbose=False):
         self.verbose = verbose
+        self.setup = setup
         self.time = 0
         self.q = PriorityQueue()
         self.miners = []
@@ -18,7 +19,7 @@ class Simulator:
         self.head = None
 
 
-    def run(self, setup, constant_propagation_delay=None):
+    def run(self, constant_propagation_delay=None):
 
         self.time = 0
         self.q = PriorityQueue()
@@ -28,9 +29,9 @@ class Simulator:
 
         genesis = Block()
         # setup = json.loads(open("setup.txt").read())
-        total_power = numpy.sum(numpy.array([float(x["power"]) for x in setup]))
+        total_power = np.sum(np.array([float(x["power"]) for x in self.setup]))
         id = 0
-        for i in setup:
+        for i in self.setup:
             if i["type"] == "honest":
                 self.miners.append(Miner(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
             if i["type"] == "selfish" or i["type"] == "bipolar":
@@ -42,7 +43,7 @@ class Simulator:
 
         n = len(self.miners)
 
-        found = [numpy.random.exponential(600 / m.power) for m in self.miners]
+        found = [np.random.exponential(600 / m.power) for m in self.miners]
         for i in range(n):
             q.put(Event(found[i], EventType.NewBlockFound, self.miners[i], self.miners[i].head))
 
