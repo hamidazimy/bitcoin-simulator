@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 import json
 import math
+from time import sleep
 from IPython import embed
 
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
@@ -13,9 +14,11 @@ rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 rc('text', usetex=True)
 
 from simulator import Simulator
-from thread import myThread
+from multiproc import myProc
+import multiprocessing
 
 if __name__ == "__main__":
+    colors = "rgbymckw"
 
     one = """
     n = 1000
@@ -94,7 +97,7 @@ if __name__ == "__main__":
         f1.write("\n")
     #"""
 
-    #three = """
+    three = """
     setup = json.loads(open("setup.txt").read())
     total_power = np.sum(np.array([float(x["power"]) for x in setup]))
     for i in setup:
@@ -121,4 +124,93 @@ if __name__ == "__main__":
     plt.ylabel(r"$G_{P_i}(t)$")
     plt.legend()
     plt.show()
+    #"""
+
+    #eight = """
+    setup = json.loads(open("setup.txt").read())
+    total_power = np.sum(np.array([float(x["power"]) for x in setup]))
+    for i in setup:
+        i["power"] /= total_power
+
+    setup = sorted(setup, key=lambda x: x["type"], reverse=True)
+
+    number_of_procs = 3
+    number_of_sims = 3
+
+    simq = multiprocessing.JoinableQueue()
+    resq = multiprocessing.Queue()
+    procs = [myProc(simq, resq) for i in range(number_of_procs)]
+    for p in procs:
+        p.start()
+
+    for c in range(number_of_sims):
+        simq.put(Simulator(setup))
+    for c in range(number_of_procs):
+        simq.put(None)
+
+    simq.join()
+
+    while number_of_sims:
+        result = resq.get()
+        print(result)
+        number_of_sims -= 1
+
+    # time = np.array(range(10, 40320, 10))
+
+    # results = []
+    # while not q.empty():
+    #     foo = q.get()
+    #     print(foo)
+    #     results.append(foo)
+
+    # print(results)
+    #
+    # # for t_ in time[0:2]:
+    # #     print("time: {}".format(t_))
+    # c = 0
+    # for p in range(number_of_procs):
+    #     print("p: {}".format(p))
+    #     for i in range(1):
+    #         print("i: {}".format(i))
+    #         print(len(results))
+    #         print(len(results[p]))
+    #         print(len(results[p][i]))
+    #
+    #         t, Gpi = results[0][i]
+    #         # foo = np.argmax(np.where(Gpi < t_, Gpi, 0))
+    #         # print(foo)
+    #         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
+    #         plt.ylim((-15, +15))
+    #         plt.plot(t, Gpi, "{}".format(colors[c]), label=label)
+    #         c += 1
+    #
+    # # for i in range(len(setup)):
+    # #     t, Gpi = results[0][i]
+    # #     label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
+    # #     plt.ylim((-15, +15))
+    # #     plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
+    #
+    #
+    # plt.plot([0, max(t)], [0, 0], "k--")
+    #
+    # plt.xlabel(r"$t$")
+    # plt.ylabel(r"$G_{P_i}(t)$")
+    # plt.legend()
+    # plt.show()
+
+
+
+
+    # for i in range(len(setup)):
+    #     t, Gpi = sim2.Gpis[i]
+    #     label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
+    #     plt.ylim((-15, +15))
+    #     plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
+    #
+    # plt.plot([0, max(t)], [0, 0], "k--")
+    #
+    # plt.xlabel(r"$t$")
+    # plt.ylabel(r"$G_{P_i}(t)$")
+    # plt.legend()
+    # plt.show()
     #"""
