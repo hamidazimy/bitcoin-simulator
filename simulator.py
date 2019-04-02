@@ -12,7 +12,6 @@ class Simulator:
         self.verbose = verbose
         self.setup = setup
         self.time = 0
-        self.q = PriorityQueue()
         self.miners = []
         self._difficulty_coefficient = 1
         self._last_difficulty_update_time = 0
@@ -23,7 +22,6 @@ class Simulator:
     def run(self, constant_propagation_delay=None):
 
         self.time = 0
-        self.q = PriorityQueue()
         self.miners = []
         self._difficulty_coefficient = 1
         self._last_difficulty_update_time = 0
@@ -40,7 +38,7 @@ class Simulator:
             id += 1
 
 
-        q = self.q
+        q = PriorityQueue()
 
         n = len(self.miners)
 
