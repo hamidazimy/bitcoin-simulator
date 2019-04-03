@@ -7,8 +7,11 @@ from queue import PriorityQueue
 
 class Simulator:
     """Simulator!"""
+    instance_count = 0
 
     def __init__(self, setup, verbose=False):
+        self.id = str(Simulator.instance_count)
+        Simulator.instance_count += 1
         self.verbose = verbose
         self.setup = setup
         self.time = 0

@@ -134,8 +134,8 @@ if __name__ == "__main__":
 
     setup = sorted(setup, key=lambda x: x["type"], reverse=True)
 
-    number_of_procs = 3
-    number_of_sims = 3
+    number_of_procs = multiprocessing.cpu_count() - 1
+    number_of_sims = 50
 
     simq = multiprocessing.JoinableQueue()
     resq = multiprocessing.Queue()
@@ -149,11 +149,6 @@ if __name__ == "__main__":
         simq.put(None)
 
     simq.join()
-
-    while number_of_sims:
-        result = resq.get()
-        print(result)
-        number_of_sims -= 1
 
     # time = np.array(range(10, 40320, 10))
 
