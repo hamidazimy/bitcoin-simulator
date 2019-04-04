@@ -16,6 +16,7 @@ rc('text', usetex=True)
 from simulator import Simulator
 from multiproc import myProc
 import multiprocessing
+import analyzer
 
 if __name__ == "__main__":
     colors = "rgbymckw"
@@ -150,62 +151,22 @@ if __name__ == "__main__":
 
     simq.join()
 
-    # time = np.array(range(10, 40320, 10))
+    Gpiss = []
+    while not resq.empty():
+        Gpiss.append(resq.get())
 
-    # results = []
-    # while not q.empty():
-    #     foo = q.get()
-    #     print(foo)
-    #     results.append(foo)
+    Gpis = analyzer.mean_gpis(Gpiss)
 
-    # print(results)
-    #
-    # # for t_ in time[0:2]:
-    # #     print("time: {}".format(t_))
-    # c = 0
-    # for p in range(number_of_procs):
-    #     print("p: {}".format(p))
-    #     for i in range(1):
-    #         print("i: {}".format(i))
-    #         print(len(results))
-    #         print(len(results[p]))
-    #         print(len(results[p][i]))
-    #
-    #         t, Gpi = results[0][i]
-    #         # foo = np.argmax(np.where(Gpi < t_, Gpi, 0))
-    #         # print(foo)
-    #         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
-    #         plt.ylim((-15, +15))
-    #         plt.plot(t, Gpi, "{}".format(colors[c]), label=label)
-    #         c += 1
-    #
-    # # for i in range(len(setup)):
-    # #     t, Gpi = results[0][i]
-    # #     label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
-    # #     plt.ylim((-15, +15))
-    # #     plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
-    #
-    #
-    # plt.plot([0, max(t)], [0, 0], "k--")
-    #
-    # plt.xlabel(r"$t$")
-    # plt.ylabel(r"$G_{P_i}(t)$")
-    # plt.legend()
-    # plt.show()
+    for i in range(len(setup)):
+        t, Gpi = Gpis[i]
+        label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
+        plt.ylim((-15, +15))
+        plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
 
+    plt.plot([0, max(t)], [0, 0], "k--")
 
-
-
-    # for i in range(len(setup)):
-    #     t, Gpi = sim2.Gpis[i]
-    #     label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
-    #     plt.ylim((-15, +15))
-    #     plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
-    #
-    # plt.plot([0, max(t)], [0, 0], "k--")
-    #
-    # plt.xlabel(r"$t$")
-    # plt.ylabel(r"$G_{P_i}(t)$")
-    # plt.legend()
-    # plt.show()
+    plt.xlabel(r"$t$")
+    plt.ylabel(r"$G_{P_i}(t)$")
+    plt.legend()
+    plt.show()
     #"""
