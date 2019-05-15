@@ -19,7 +19,7 @@ import multiprocessing
 import analyzer
 
 if __name__ == "__main__":
-    colors = "rgbymckw"
+    colors = "bgrymckw"
 
     one = """
     n = 1000
@@ -133,10 +133,10 @@ if __name__ == "__main__":
     for i in setup:
         i["power"] /= total_power
 
-    setup = sorted(setup, key=lambda x: x["type"], reverse=True)
+    # setup = sorted(setup, key=lambda x: x["type"], reverse=True)
 
     number_of_procs = multiprocessing.cpu_count() - 1
-    number_of_sims = 50
+    number_of_sims = 98
 
     simq = multiprocessing.JoinableQueue()
     resq = multiprocessing.Queue()
@@ -157,6 +157,7 @@ if __name__ == "__main__":
 
     Gpis = analyzer.mean_gpis(Gpiss)
 
+    plt.figure(figsize=(6, 4))
     for i in range(len(setup)):
         t, Gpi = Gpis[i]
         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
