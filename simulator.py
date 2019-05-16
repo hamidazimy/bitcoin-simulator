@@ -36,8 +36,8 @@ class Simulator:
         for i in self.setup:
             if i["type"] == "honest":
                 self.miners.append(Miner(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
-            if i["type"] == "selfish" or i["type"] == "bipolar":
-                self.miners.append(Selfish(id, i["power"] / total_power, genesis, self, constant_propagation_delay, i["type"] == "bipolar"))
+            if i["type"] == "selfish":
+                self.miners.append(Selfish(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
             id += 1
 
 
