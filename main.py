@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     plt.plot([0, max(t)], [0, 0], "k--")
 
-    plt.xlabel(r"$t$")
+    plt.xlabel(r"$t (h)$")
     plt.ylabel(r"$G_{P_i}(t)$")
     plt.legend()
     plt.show()

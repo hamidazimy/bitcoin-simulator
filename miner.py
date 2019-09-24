@@ -69,11 +69,14 @@ class Miner:
 class Selfish(Miner):
     """Selfish Miner!"""
 
-    def __init__(self, id_, power, head, simulator, constant_propagation_delay=None):
+    def __init__(self, id_, power, head, simulator, constant_propagation_delay=None, delay=0):
         super().__init__(id_, power, head, simulator, constant_propagation_delay)
         self.public = head
+        self.delay = delay
 
     def generate(self, event):
+        if self.head.height < self.delay:
+            return super().generate(event)
         delta = self.head.height - self.public.height
         self.simulator.log("{}{}{:^11.2f}{}".format(CSI.BG_MG, CSI.FG_BK, event.time, CSI.RESET))
         self.head = Block(self.head.height + 1, event.time, self, self.head)
@@ -86,6 +89,8 @@ class Selfish(Miner):
         return consequences, self.head
 
     def receive(self, event):
+        if self.head.height < self.delay:
+            return super().receive(event)
         delta = self.head.height - self.public.height
         self.simulator.log("{}{}{:^11.2f}{}".format(CSI.BG_CY, CSI.FG_BK, event.time, CSI.RESET))
         self.simulator.log("Miner {} received new block! {}".format(self.id_, event.head))
@@ -116,8 +121,3 @@ class Selfish(Miner):
                 self.simulator.log("{}{} FORK!!! {}".format(CSI.FG_RD, CSI.REVERSE, CSI.RESET))
                 self.simulator.log("Newly received block discarded.")
             return [], None
-
-    def propagation_delay(self):
-        if self.constant_propagation_delay is not None:
-            return self.constant_propagation_delay
-        return numpy.random.gamma(1.26, 10)
