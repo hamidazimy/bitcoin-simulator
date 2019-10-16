@@ -126,10 +126,9 @@ class Selfish(Miner):
 class SemiSelfish(Selfish):
     """Semi-Selfish Miner!"""
 
-    def __init__(self, id_, power, head, simulator, constant_propagation_delay=None, delay=0):
-        super().__init__(id_, power, head, simulator, constant_propagation_delay)
-        self.public = head
-        self.delay = delay
+    def __init__(self, id_, power, head, simulator, constant_propagation_delay=None, delay=0, degree=2):
+        super().__init__(id_, power, head, simulator, constant_propagation_delay, delay)
+        self.degree = degree
 
     def generate(self, event):
         if self.head.height < self.delay:
@@ -143,8 +142,11 @@ class SemiSelfish(Selfish):
         if delta == 0 and self.head.prev != self.public:
             consequences += [Event(event.time + self.propagation_delay(), EventType.NewBlockReceived, m, self.head)
                              for m in self.simulator.miners if m != self]
-        if delta == 2:
-            consequences += [Event(event.time + self.propagation_delay(), EventType.NewBlockReceived, m, self.head.prev.prev)
+        if delta == self.degree:
+            publishable = self.head
+            for i in range(self.degree):
+                publishable = publishable.prev
+            consequences += [Event(event.time + self.propagation_delay(), EventType.NewBlockReceived, m, publishable)
                              for m in self.simulator.miners if m != self]
         return consequences, self.head
 
