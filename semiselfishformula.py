@@ -34,6 +34,8 @@ Y_semi_selfish = np.array([r_semi_selfish(a, a) for a in alpha])
 plt.plot(alpha, Y_semi_selfish, label="semi-selfish (gamma={})".format("alpha"))
 
 
+plt.plot([0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.37, 0.40, 0.42, 0.45, 0.47, 0.48, 0.49, 0.50], [0.009, 0.033, 0.069, 0.115, 0.172, 0.237, 0.315, 0.351, 0.410, 0.454, 0.541, 0.625, 0.680, 0.784, 0.912], label="simulation")
+
 
 plt.xlim(0, 0.5)
 plt.ylim(0, 1)
