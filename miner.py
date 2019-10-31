@@ -16,9 +16,14 @@ class Miner:
         self.head = head
         self.simulator = simulator
         self.constant_propagation_delay = constant_propagation_delay
+        self.gamma_num = 0
+        self.gamma_den = 0
 
     def __str__(self):
         return "M{} ({})".format(self.id_, self.power)
+
+    def gamma(self):
+        return (0 if self.gamma_den == 0 else (self.gamma_num / self.gamma_den))
 
     def perform(self, event):
         if event.type_ == EventType.NewBlockFound:
@@ -55,6 +60,9 @@ class Miner:
             else:
                 self.simulator.log("{}{} FORK!!! {}".format(CSI.FG_RD, CSI.REVERSE, CSI.RESET))
                 self.simulator.log("Newly received block discarded.")
+                self.gamma_den += 1
+                if isinstance(temp.miner, Selfish) or isinstance(temp.miner, SemiSelfish):
+                    self.gamma_num += 1
             return [], None
 
     def generation_time(self):
