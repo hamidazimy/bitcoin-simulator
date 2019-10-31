@@ -151,6 +151,13 @@ if __name__ == "__main__":
 
     simq.join()
 
+
+    gammas = []
+    while not resq.empty():
+        gammas.append(resq.get())
+    print(gammas)
+
+    """
     Gpiss = []
     while not resq.empty():
         Gpiss.append(resq.get())
@@ -163,6 +170,7 @@ if __name__ == "__main__":
         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format("S" if setup[i]["type"] == "selfish" else "H", i, setup[i]["power"])
         plt.ylim((-15, +15))
         plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
+        # plt.plot(t, t * 6 * setup[i]["power"], "{}--".format(colors[i]), label=label)
 
     plt.plot([0, max(t)], [0, 0], "k--")
 
@@ -170,4 +178,4 @@ if __name__ == "__main__":
     plt.ylabel(r"$G_{P_i}(t)$")
     plt.legend()
     plt.show()
-    #"""
+    """

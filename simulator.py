@@ -19,7 +19,9 @@ class Simulator:
         self._difficulty_coefficient = 1
         self._last_difficulty_update_time = 0
         self.head = None
+        self.Rpis = []
         self.Gpis = []
+        self.gamma = 0
 
 
     def run(self, constant_propagation_delay=None):
@@ -81,11 +83,17 @@ class Simulator:
 
         self.log("{}".format(blocks[-1]))
 
+        gammas = []
         for i in range(len(self.setup)):
             t = np.array([b.time / 3600 for b in blocks[1:]])
             Rpi = np.cumsum(np.equal([b.miner.id_ for b in blocks[1:]], [i] * head.height))
             Gpi = (Rpi - self.setup[i]["power"] * (t * 6)) / (t * 6) * 100
+            self.Rpis.append((t, Rpi))
             self.Gpis.append((t, Gpi))
+            if self.setup[i]["type"] == "honest":
+                gammas.append(self.miners[i].gamma())
+        self.gamma = (0 if len(gammas) == 0 else (sum(gammas) / len(gammas)))
+
 
     def log(self, text):
         if self.verbose:
