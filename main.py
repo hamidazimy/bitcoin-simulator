@@ -8,6 +8,8 @@ import math
 from time import sleep
 from IPython import embed
 
+from formula import get_X_and_G
+
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
 ## for Palatino and other serif fonts use:
 #rc('font',**{'family':'serif','serif':['Palatino']})
@@ -154,12 +156,12 @@ if __name__ == "__main__":
     simq.join()
 
 
-    gammas = []
-    while not resq.empty():
-        gammas.append(resq.get())
-    print(gammas)
+    # gammas = []
+    # while not resq.empty():
+    #     gammas.append(resq.get())
+    # print(sum(gammas) / number_of_sims)
 
-    """
+    #"""
     Gpiss = []
     while not resq.empty():
         Gpiss.append(resq.get())
@@ -168,17 +170,24 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(6, 4))
     for i in range(len(setup)):
+        if setup[i]["type"] != "selfish":
+            continue
+        alpha = setup[i]["power"]
         t, Gpi = Gpis[i]
         print(Gpi[-1])
         label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format(CAPTION[setup[i]["type"]], i, setup[i]["power"])
         plt.ylim((-15, +15))
         plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
         # plt.plot(t, t * 6 * setup[i]["power"], "{}--".format(colors[i]), label=label)
+        break
 
     plt.plot([0, max(t)], [0, 0], "k--")
+
+    X, G = get_X_and_G(alpha)
+    plt.plot(X, G, "r", label="alpha = {:.2f}".format(alpha))
 
     plt.xlabel(r"$t (h)$")
     plt.ylabel(r"$G_{P_i}(t)$")
     plt.legend()
     plt.show()
-    """
+    #"""

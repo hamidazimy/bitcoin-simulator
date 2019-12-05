@@ -1,18 +1,10 @@
 [
   {
-    "power": 22,
+    "power": 60,
     "type": "honest"
   },
   {
-    "power": 22,
-    "type": "honest"
-  },
-  {
-    "power": 22,
-    "type": "honest"
-  },
-  {
-    "power": 34,
+    "power": 40,
     "type": "selfish"
   }
 ]

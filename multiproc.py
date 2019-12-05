@@ -23,7 +23,7 @@ class myProc(multiprocessing.Process):
             sim.run()
             sim.analyze()
             print("Simulator {} finished".format(sim.id))
-            self.resq.put(sim.gamma)
+            self.resq.put(sim.Gpis)
             self.simq.task_done()
         print("Exiting " + id)
         exit(0)
