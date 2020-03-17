@@ -129,6 +129,8 @@ if __name__ == "__main__":
     plt.show()
     #"""
 
+    CAPTION = {"honest": "H", "selfish": "S", "semi": "SS"}
+
     #eight = """
     setup = json.loads(open("setup.txt").read())
     total_power = np.sum(np.array([float(x["power"]) for x in setup]))
@@ -154,12 +156,12 @@ if __name__ == "__main__":
     simq.join()
 
 
-    gammas = []
-    while not resq.empty():
-        gammas.append(resq.get())
-    print(gammas)
+    # gammas = []
+    # while not resq.empty():
+    #     gammas.append(resq.get())
+    # print(sum(gammas) / number_of_sims)
 
-    """
+    #"""
     Gpiss = []
     while not resq.empty():
         Gpiss.append(resq.get())
@@ -173,6 +175,9 @@ if __name__ == "__main__":
 
     plt.figure(figsize=(6, 4))
     for i in range(len(setup)):
+        if setup[i]["type"] != "selfish":
+            continue
+        alpha = setup[i]["power"]
         t, Gpi = Gpis[i]
         print(Gpi[-1])
         # label = r"${0}_{1}~(\alpha_{1} = {2:.2f})$".format(CAPTION[setup[i]["type"]], i, alpha)
@@ -180,6 +185,7 @@ if __name__ == "__main__":
         plt.plot(t, Gpi, "{}".format(colors[i]), label=label)
         break
         # plt.plot(t, t * 6 * setup[i]["power"], "{}--".format(colors[i]), label=label)
+        break
 
     plt.plot([0, max(t)], [0, 0], "k--")
     plt.ylim((-15, +15))

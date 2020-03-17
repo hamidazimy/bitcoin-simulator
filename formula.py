@@ -195,4 +195,3 @@ if __name__ == "__main__":
     # plot_breakeven()
     plot_G(alpha)
 
-

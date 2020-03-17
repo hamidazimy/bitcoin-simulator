@@ -42,6 +42,8 @@ class Simulator:
                 self.miners.append(Miner(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
             if i["type"] == "selfish":
                 self.miners.append(Selfish(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
+            if i["type"] == "semi":
+                self.miners.append(SemiSelfish(id, i["power"] / total_power, genesis, self, constant_propagation_delay))
             id += 1
 
 
@@ -106,4 +108,4 @@ class Simulator:
 
 from event import Event, EventType
 from block import Block
-from miner import Miner, Selfish
+from miner import Miner, Selfish, SemiSelfish
