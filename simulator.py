@@ -9,6 +9,8 @@ class Simulator:
     """Simulator!"""
     instance_count = 0
 
+    MAX_HEIGHT = 3000
+
     def __init__(self, setup, verbose=False):
         self.id = str(Simulator.instance_count)
         Simulator.instance_count += 1
@@ -52,13 +54,15 @@ class Simulator:
             q.put(Event(found[i], EventType.NewBlockFound, self.miners[i], self.miners[i].head))
 
         head = Block()
-        while head.height < 40320:
+        while head.height < Simulator.MAX_HEIGHT:
             next_event = q.get()
             self.time = next_event.time
             consequences, new_head = next_event.occur()
             if new_head is not None and new_head.height > head.height:
                 head = new_head
                 if head.height % 2016 == 0:
+                    if head.height == 2016:
+                        print(f"{head.time:.1f}\t")
                     prev_diffculty = self._difficulty_coefficient
                     self._difficulty_coefficient *= (2016 * 600) / (head.time - self._last_difficulty_update_time)
                     self.log("{}".format(head))
