@@ -6,4 +6,6 @@ lib
 lib64
 share
 pyvenv.cfg
+.ignore
+setup.txt
 
