@@ -6,17 +6,21 @@ def p_1(alpha):
     # This comes from Equation 4
     return (alpha - 2 * alpha ** 2) / (2 * alpha ** 3 - 4 * alpha ** 2 + 1)
 
+
 def p_0(alpha):
     # This comes from Equation 2
     return p_1(alpha) / alpha
 
-def p_0prime(alpha):
+
+def pprime_0(alpha):
     # This comes from Equation 3
     return p_1(alpha) * (1 - alpha)
+
 
 def p_k(alpha, k):
     # This comes from Equation 5
     return p_1(alpha) * (alpha / (1 - alpha)) ** (k - 1)
+
 
 def p_gt2(alpha):
     # This comes from Equation 5
@@ -25,22 +29,32 @@ def p_gt2(alpha):
     r = alpha / (1 - alpha)     # the common ratio
     return a / (1 - r)
 
+
 def r_others(alpha, gamma):
     # This comes from Equation 6
-    return p_0prime(alpha) * gamma * (1 - alpha) * 1 + p_0prime(alpha) * (1 - gamma) * (1 - alpha) * 2 + p_0(alpha) * (1 - alpha) * 1
+    return pprime_0(alpha) * gamma * (1 - alpha) * 1 + \
+           pprime_0(alpha) * (1 - gamma) * (1 - alpha) * 2 + \
+           p_0(alpha) * (1 - alpha) * 1
+
 
 def r_selfish(alpha, gamma):
-    # This comes from Equation
-    return p_0prime(alpha) * alpha * 2 + p_0prime(alpha) * gamma * (1 - alpha) * 1 + p_k(alpha, 2) * (1 - alpha) * 2 + p_gt2(alpha) * (1 - alpha) * 1
+    # This comes from Equation 7
+    return pprime_0(alpha) * alpha * 2 + \
+           pprime_0(alpha) * gamma * (1 - alpha) * 1 + \
+           p_k(alpha, 2) * (1 - alpha) * 2 + \
+           p_gt2(alpha) * (1 - alpha) * 1
+
 
 def r_total(alpha, gamma):
     # Denominator of Equation 8
     return r_selfish(alpha, gamma) + r_others(alpha, gamma)
 
+
 def R_selfish(alpha, gamma):
     # This comes from Equation 8
     return (alpha * (1 - alpha) ** 2 * (4 * alpha + gamma * (1 - 2 * alpha)) - alpha ** 3) /\
             (1 - alpha * (1 + (2 - alpha) * alpha))
+
 
 def R_selfish_t(alpha, gamma=0, MAX_HEIGHT=4096):
     T = 2016 / 6
@@ -135,6 +149,7 @@ def t_breakeven(alpha, gamma=0):
     R_s = r_s / r_t
     return (R_s - r_s) * r_t / (R_s - alpha) * (2016 / 6)
 
+
 def plot_G(alpha):
     t, Gt = get_t_and_Gt(alpha, 0, 40960)
 
@@ -151,11 +166,14 @@ def plot_G(alpha):
 def q_(q, l):
     return (q * (1 - q) ** 2 * (4 * q + l * (1 - 2 * q)) - q ** 3) / (1 - q * (1 + q * (2 - q)))
 
+
 def Edelta(p, q):
     return (p - q + p * q * (p - q) + p * q) / (p ** 2 * q + p - q)
 
+
 def Et0(p, q, l, n0, t0):
     return (q_(q, l) * (Edelta(p, q) - 1)) / (q_(q, l) - q) * (n0 * t0)
+
 
 def plot_grunspan2018profitability_Fig2():
     l = .5
@@ -172,6 +190,7 @@ def plot_grunspan2018profitability_Fig2():
     plt.ylabel("Weeks")
     plt.ylim([0, 14])
     # plt.show()
+
 
 def plot_breakeven():
     gamma = .5

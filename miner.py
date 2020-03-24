@@ -36,12 +36,12 @@ class Miner:
 
     def generate(self, event):
         self.simulator.log("{}{}{:^11.2f}{}".format(CSI.BG_MG, CSI.FG_BK, event.time, CSI.RESET))
-        self.head = Block(self.head.height + 1, event.time, self, self.head)
+        self.head = Block(self.head.height + 1, self.simulator.difficulty_coefficient, event.time, self, self.head)
         self.simulator.log("Miner {} found new block! {}".format(self.id_, self.head))
         consequences = []
         consequences += [Event(event.time + self.generation_time(), EventType.NewBlockFound, self, self.head)]
         consequences += [Event(event.time + self.propagation_delay(), EventType.NewBlockReceived, m, self.head)
-                            for m in self.simulator.miners if m != self]
+                         for m in self.simulator.miners if m != self]
         return consequences, self.head
 
     def receive(self, event):
@@ -66,7 +66,7 @@ class Miner:
             return [], None
 
     def generation_time(self):
-        return numpy.random.exponential(600 / self.power * self.simulator._difficulty_coefficient)
+        return numpy.random.exponential(600 / self.power * self.simulator.difficulty_coefficient)
 
     def propagation_delay(self):
         if self.constant_propagation_delay is not None:
@@ -87,7 +87,7 @@ class Selfish(Miner):
             return super().generate(event)
         delta = self.head.height - self.public.height
         self.simulator.log("{}{}{:^11.2f}{}".format(CSI.BG_MG, CSI.FG_BK, event.time, CSI.RESET))
-        self.head = Block(self.head.height + 1, event.time, self, self.head)
+        self.head = Block(self.head.height + 1, self.simulator.difficulty_coefficient, event.time, self, self.head)
         self.simulator.log("Miner {} found new block! {}".format(self.id_, self.head))
         consequences = []
         consequences += [Event(event.time + self.generation_time(), EventType.NewBlockFound, self, self.head)]
@@ -143,7 +143,7 @@ class SemiSelfish(Selfish):
             return super().generate(event)
         delta = self.head.height - self.public.height
         self.simulator.log("{}{}{:^11.2f}{}".format(CSI.BG_MG, CSI.FG_BK, event.time, CSI.RESET))
-        self.head = Block(self.head.height + 1, event.time, self, self.head)
+        self.head = Block(self.head.height + 1, self.simulator.difficulty_coefficient, event.time, self, self.head)
         self.simulator.log("Miner {} found new block! {}".format(self.id_, self.head))
         consequences = []
         consequences += [Event(event.time + self.generation_time(), EventType.NewBlockFound, self, self.head)]

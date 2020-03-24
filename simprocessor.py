@@ -1,10 +1,17 @@
 import multiprocessing
+import sys
 import random
 import numpy
-from simulator import Simulator
-import sys
+
 
 class SimProcessor(multiprocessing.Process):
+
+    verbose = False
+
+    @classmethod
+    def log(cls, line):
+        if SimProcessor.verbose:
+            sys.stderr.write(line)
 
     def __init__(self, simq, resq):
         multiprocessing.Process.__init__(self)
@@ -12,9 +19,8 @@ class SimProcessor(multiprocessing.Process):
         self.resq = resq
 
     def run(self):
-        id = self.name
         numpy.random.seed(int(random.random() * 1000))
-        SimProcessor.log(f"Starting {id}\n")
+        SimProcessor.log(f"Starting {self.name}\n")
         while True:
             sim = self.simq.get()
             if sim is None:
@@ -25,11 +31,6 @@ class SimProcessor(multiprocessing.Process):
             sim.run()
             sim.analyze()
             SimProcessor.log(f"Simulator {sim.id} finished")
-            self.resq.put(sim.Gpis)
+            self.resq.put(sim.result)
             self.simq.task_done()
-        SimProcessor.log(f"Exiting {id}")
-
-    @classmethod
-    def log(cls, line):
-        if False:
-            sys.stderr.write(line)
+        SimProcessor.log(f"Exiting {self.name}")

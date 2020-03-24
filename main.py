@@ -10,13 +10,13 @@ from IPython import embed
 
 from formula import get_t_and_Gt
 
-rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
+rc('font', **{'family': 'sans-serif', 'sans-serif': ['Helvetica']})
 ## for Palatino and other serif fonts use:
 #rc('font',**{'family':'serif','serif':['Palatino']})
 rc('text', usetex=True)
 
 from simulator import Simulator
-from SimProcessor import SimProcessor
+from simprocessor import SimProcessor
 import multiprocessing
 import analyzer
 
@@ -129,8 +129,6 @@ if __name__ == "__main__":
     plt.show()
     #"""
 
-    CAPTION = {"honest": "H", "selfish": "S", "semi": "SS"}
-
     #eight = """
     setup = json.loads(open("setup.txt").read())
     total_power = np.sum(np.array([float(x["power"]) for x in setup]))
@@ -155,13 +153,21 @@ if __name__ == "__main__":
 
     simq.join()
 
+    sim1 = resq.get()
+    x = [b[0] / 3600 for b in sim1]
+    y = [b[1] for b in sim1]
+    plt.figure(figsize=(6, 4))
+    plt.plot(x, y)
+    plt.ylim(0, 1.5)
+    plt.show()
+
 
     # gammas = []
     # while not resq.empty():
     #     gammas.append(resq.get())
     # print(sum(gammas) / number_of_sims)
 
-    #"""
+    """
     Gpiss = []
     while not resq.empty():
         Gpiss.append(resq.get())

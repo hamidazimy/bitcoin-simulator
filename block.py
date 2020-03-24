@@ -1,8 +1,9 @@
 class Block:
     """Block!"""
 
-    def __init__(self, height=0, time=0, miner=None, prev=None):
+    def __init__(self, height=0, difficulty=None, time=0, miner=None, prev=None):
         self.height = height
+        self.difficulty = difficulty
         self.time = time
         self.miner = miner
         self.prev = prev
